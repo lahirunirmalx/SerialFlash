@@ -1,0 +1,15 @@
+version: "0.5.0"
+description: "Filesystem-like access to SPI Serial Flash memory (ESP-IDF port of Paul Stoffregen's SerialFlash library)"
+url: "https://github.com/PaulStoffregen/SerialFlash"
+license: "MIT"
+
+targets:
+  - esp32
+  - esp32s2
+  - esp32s3
+  - esp32c3
+  - esp32c6
+  - esp32h2
+
+dependencies:
+  idf: ">=5.0"
