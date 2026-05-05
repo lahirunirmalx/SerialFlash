@@ -1,0 +1,4 @@
+## Pull the SerialFlash component in by local path (repo root, 4 levels up).
+dependencies:
+  serial_flash:
+    path: "../../../.."

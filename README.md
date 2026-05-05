@@ -131,16 +131,21 @@ Writes can only target previously unwritten bytes within the file's original siz
 
 The on-flash directory layout is byte-for-byte compatible with the Arduino library — chips provisioned by either side can be read by the other.
 
-## Example
+## Examples
 
-[`examples/esp-idf/ListFiles/`](examples/esp-idf/ListFiles/) is a runnable PlatformIO + ESP-IDF project that mirrors the upstream Arduino `ListFiles.ino`. Adjust the four pin assignments in `main/main.cpp` to match your wiring, then `pio run -t upload monitor`.
+- [`examples/esp-idf/ListFiles/`](examples/esp-idf/ListFiles/) — opens the chip, prints the directory. Mirrors upstream `ListFiles.ino`.
+- [`examples/esp-idf/CopyFromSerial/`](examples/esp-idf/CopyFromSerial/) — receives framed files from a host PC over a dedicated UART (default UART1 on RX=18 / TX=17 @ 115200) and writes them into the chip via `SerialFlash.create()` + `write()`. Pairs with the host-side uploader below. Mirrors upstream `CopyFromSerial.ino`.
+
+Adjust the pin assignments at the top of each example's `main/main.cpp`, then `pio run -t upload monitor`.
 
 ## Tools
 
-[`extras/rawfile-uploader.py`](extras/rawfile-uploader.py) — host-side uploader that streams files over USB serial to a device-side receiver (a `CopyFromSerial`-style firmware that calls `SerialFlash.create()` + `write()` for each framed record). Wire-compatible with the upstream Arduino script's framing, so it works against either an Arduino or ESP-IDF receiver. Python 3, requires `pyserial`.
+[`extras/rawfile-uploader.py`](extras/rawfile-uploader.py) — host-side uploader that streams files over USB serial to the `CopyFromSerial` firmware. Wire-compatible with the upstream Arduino script's framing protocol, so it works against either an Arduino or ESP-IDF receiver. Python 3, requires `pyserial`.
 
     pip install pyserial
     extras/rawfile-uploader.py /dev/ttyUSB0 audio1.raw audio2.raw
+
+The protocol UART is intentionally separate from the ESP32 console UART so log output and binary data don't share a channel — connect the host PC to the protocol UART via a USB-UART adapter (CP2102, FT232, CH340, …); keep the board's native USB cable for `idf.py monitor` / `pio device monitor`.
 
 ## License
 
